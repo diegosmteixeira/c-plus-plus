@@ -1,4 +1,7 @@
-#pragma once //essa instrução evita que o mesmo arquivo seja incluído várias vezes na mesma unidade de tradução
+
+//essa instrução evita que o mesmo arquivo seja incluído várias vezes na mesma unidade de tradução
+#pragma once 
+
 #include <string>
 #include "Titular.hpp"
 
@@ -16,12 +19,19 @@ public:
 private:
 	std::string numero;
 	Titular titular;
+
+//atributos protected são acessíveis pelas subclasses
+protected:
 	float saldo;
 
 public:
 	Conta(std::string numero, Titular titular);
-	~Conta(); //método destrutor chamado quando a variável (objeto) deixa de existir (ele não é chamado explicitamente)
+
+	//método destrutor chamado quando a variável (objeto) deixa de existir (ele não é chamado explicitamente)
+	virtual ~Conta();
+	
 	void sacar(float valorASacar);
 	void depositar(float valorADepositar);
 	float recuperaSaldo() const;
+	virtual float taxaDeSaque() const = 0;
 };

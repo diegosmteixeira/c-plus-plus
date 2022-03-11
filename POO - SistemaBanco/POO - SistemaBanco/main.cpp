@@ -1,23 +1,57 @@
 #include <iostream>
 #include <string>
 #include "Conta.hpp"
+#include "ContaCorrente.hpp"
+#include "ContaPoupanca.hpp"
 #include "Titular.hpp"
-#include "Cpf.hpp" 
+#include "Cpf.hpp"
+#include "Funcionario.hpp"
 
 using namespace std;
 
+void ExibeSaldo(const Conta& conta)
+{
+    cout << "O saldo da conta: " << conta.recuperaSaldo() << endl;
+}
+
+void RealizaSaque(Conta& conta)
+{
+    conta.sacar(200);
+}
+
+void FazLogin(Autenticavel& alguem, string senha)
+{
+    if (alguem.autentica(senha))
+    {
+        cout << "Login realizado com sucesso" << endl;
+    }
+    else
+    {
+        cout << "Senha inválida" << endl;
+    }
+}
+
 int main()
 {
-	Titular titular(Cpf("123.456.789-13"), "Diego");
-	Conta primeiraConta("11111", titular);
+    Titular titular(Cpf("123.456.789-10"), "Diego", "senhaforte");
 
-	Titular titular2(Cpf("789.456.789-13"), "Vanessa");
-	Conta umaConta("123456", titular2);
-	umaConta.depositar(500);
-	
+    ContaPoupanca umaConta("123456", titular);
+    umaConta.depositar(500);
+    RealizaSaque(umaConta);
 
-	cout << "Numero de contas: " << Conta::recuperaNumeroDeContas() << endl;
+    Titular outro(Cpf("098.765.432-10"), "Vanessa", "senha");
+    ContaCorrente umaOutraConta("654321", titular);
+    umaOutraConta.depositar(300);
 
-	cout << "Uma conta: " << umaConta.recuperaSaldo() << endl;
-	return 0;
+    ContaCorrente outraContaCorrente("546312", titular);
+
+    umaOutraConta.transferePara(umaConta, 250);
+
+    ExibeSaldo(umaConta);
+    ExibeSaldo(umaOutraConta);
+    ExibeSaldo(outraContaCorrente);
+
+    cout << "Número de contas: " << Conta::recuperaNumeroDeContas() << endl;
+
+    return 0;
 }

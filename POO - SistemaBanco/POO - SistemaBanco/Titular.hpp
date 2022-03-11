@@ -1,15 +1,11 @@
 #pragma once
-#include "Cpf.hpp"
 #include <string>
+#include "Autenticavel.hpp"
+#include "Pessoa.hpp"
+#include "Cpf.hpp"
 
-class Titular
+class Titular : public Pessoa, public Autenticavel
 {
-private:
-	Cpf cpf;
-	std::string nome;
 public:
-	Titular(Cpf cpf, std::string nome);
-
-private:
-	void verificaTamanhoDoNome();
+    Titular(Cpf cpf, std::string nome, std::string senha);
 };
