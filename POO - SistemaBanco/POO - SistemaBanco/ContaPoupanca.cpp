@@ -1,13 +1,13 @@
 #include "ContaPoupanca.hpp"
 #include <iostream>
 
-ContaPoupanca::ContaPoupanca(std::string numero, Titular titular) : Conta(numero, titular)
+int Conta<3>::numeroDeContas;
+
+int Conta<3>::recuperaNumeroDeContas()
 {
+    return numeroDeContas;
 }
 
-float ContaPoupanca::taxaDeSaque() const
+ContaPoupanca::ContaPoupanca(std::string numero, Titular titular) : Conta(numero, titular)
 {
-    std::cout << "Chamando metodo sacar() da conta poupanca" << std::endl;
-
-    return 0.03;
 }

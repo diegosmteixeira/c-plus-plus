@@ -1,37 +1,90 @@
-
-//essa instrução evita que o mesmo arquivo seja incluído várias vezes na mesma unidade de tradução
-#pragma once 
-
+#pragma once
 #include <string>
+#include <utility>
+#include <variant>
 #include "Titular.hpp"
 
+template <int percentualTarifa>
 class Conta
 {
-//atributos com 'static' pertencem a toda à classe e aos objetos instanciados (como se fosse global a todos os objetos)
 private:
-	static int numeroDeContas;
+    static int numeroDeContas;
 
-//método static visível pela classe e seus objetos instanciados
 public:
-	static int recuperaNumeroDeContas();
+    static int recuperaNumeroDeContas();
 
-//atributos privados são acessíveis dentro da própria classe
-private:
-	std::string numero;
-	Titular titular;
+public:
+    std::string numero;
+    Titular titular;
 
-//atributos protected são acessíveis pelas subclasses
 protected:
-	float saldo;
+    float saldo;
 
 public:
-	Conta(std::string numero, Titular titular);
 
-	//método destrutor chamado quando a variável (objeto) deixa de existir (ele não é chamado explicitamente)
-	virtual ~Conta();
-	
-	void sacar(float valorASacar);
-	void depositar(float valorADepositar);
-	float recuperaSaldo() const;
-	virtual float taxaDeSaque() const = 0;
+    enum ResultadoSaque
+    {
+        ValorNegativo, SaldoInsuficiente
+    };
+
+    Conta(std::string numero, Titular titular) :
+        numero(numero),
+        titular(titular),
+        saldo(0)
+    {
+        numeroDeContas++;
+    }
+
+    virtual ~Conta()
+    {
+        std::cout << "Destrutor da conta" << std::endl;
+        numeroDeContas--;
+    }
+
+    std::variant<ResultadoSaque, float> sacar(float valorASacar)
+    {
+        if (valorASacar < 0) {
+            std::cout << "Não pode sacar valor negativo" << std::endl;
+            return ValorNegativo;
+        }
+
+        float tarifaDeSaque = valorASacar * (percentualTarifa / 100);
+        float valorDoSaque = valorASacar + tarifaDeSaque;
+
+        if (valorDoSaque > saldo) {
+            std::cout << "Saldo insuficiente" << std::endl;
+            return SaldoInsuficiente;
+        }
+
+        saldo -= valorDoSaque;
+
+        return saldo;
+    }
+
+    void depositar(float valorADepositar)
+    {
+        if (valorADepositar < 0) {
+            std::cout << "Não pode sacar valor negativo" << std::endl;
+            return;
+        }
+
+        saldo += valorADepositar;
+    }
+
+    void operator+=(float valorADepositar)
+    {
+        depositar(valorADepositar);
+    }
+
+    float recuperaSaldo() const
+    {
+        return saldo;
+    }
+
+    bool operator<(const Conta& outra)
+    {
+        return this->saldo < outra.saldo;
+    }
+
+    friend std::ostream& operator<<(std::ostream& cout, const Conta& conta);
 };
